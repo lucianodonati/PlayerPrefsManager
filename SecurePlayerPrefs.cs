@@ -25,9 +25,8 @@ public class SecurePlayerPrefs
    * These constants are used in storing the random part for each device,
    * And for the prefs it uses the random number instead of PRIVATE_KEY_RAND.
    */
-    private static readonly string PRIVATE_KEY_PREFIX = "abcd";
-    private static readonly string PRIVATE_KEY_RAND = "efg";
-    private static readonly string PRIVATE_KEY_SUFFIX = "h";
+    private static readonly string PRIVATE_KEY_PREFIX = "1uc";
+    private static readonly string PRIVATE_KEY_SUFFIX = "d0n";
 
     // The private key of DES encryption.
     private static string privateKey;
@@ -36,7 +35,7 @@ public class SecurePlayerPrefs
     private static bool isInit = false;
 
     // Your private key to store the randomly generated key for each device.
-    private static readonly string RAND_KEY = "abcdefgh";
+    private static readonly string RAND_KEY = "a9Gjj5R2eM9LkOIU45o6";
 
     // Should errors/exceptions be logged.
     private static bool logErrorsEnabled = false;
@@ -47,28 +46,16 @@ public class SecurePlayerPrefs
 	 * a random 3 digit number and puts it between private key and its appendix.
 	 * If this was initialized on this device before, it will load it and create
 	 * the private key.
-	 *
-	 * You can also copy players current preferences if your moving from Unity's
-	 * PlayerPrefs to this secure one.
 	 */
     public static void Init()
     {
         if (HasKey(RAND_KEY))
-        {
-            privateKey = PRIVATE_KEY_PREFIX + PRIVATE_KEY_RAND + PRIVATE_KEY_SUFFIX;
-            privateKey = GetString(RAND_KEY);
-            privateKey = PRIVATE_KEY_PREFIX + privateKey + PRIVATE_KEY_SUFFIX;
-        }
+            privateKey = PRIVATE_KEY_PREFIX + GetString(RAND_KEY) + PRIVATE_KEY_SUFFIX;
         else
         {
-            int rand = UnityEngine.Random.Range(100, 1000);
-            privateKey = PRIVATE_KEY_PREFIX + PRIVATE_KEY_RAND + PRIVATE_KEY_SUFFIX;
-            SetInt(RAND_KEY, rand);
+            int rand = UnityEngine.Random.Range(100,999);
             privateKey = PRIVATE_KEY_PREFIX + rand + PRIVATE_KEY_SUFFIX;
-            /*
-			 * Add copying PlayerPrefs to SecurePlayerPrefs code here.
-			 * See the example at GitHub. www.github.com/rawandnf/SecurePlayerPrefs
-			 */
+            SetInt(RAND_KEY, rand);
         }
         isInit = true;
     }
@@ -82,53 +69,6 @@ public class SecurePlayerPrefs
         return isInit;
     }
 
-
-    /**
-	 * Converts unsecure player prefs to secure player prefs.
-	 *
-	 * Basically translates the prefs to secure ones.
-	 * @param keynames Is the list of keys with old and new name, [old name][new name][type].
-	 * @param deleteOldKeys Should it delete the old keys.
-	 */
-    private static void securePlayerPrefs(string[,] keynames, bool deleteOldKeys)
-    {
-        for (int i = 0; i < keynames.GetLength(0); i++)
-        {
-            if (keynames[i, 2].Equals("int"))
-            {
-                // Getting the integer and saving it encrypted.
-                int temp = PlayerPrefs.GetInt(keynames[i, 0]);
-                if (deleteOldKeys)
-                {
-                    PlayerPrefs.DeleteKey(keynames[i, 0]);
-                }
-                SetInt(keynames[i, 1], temp);
-            }
-            else if (keynames[i, 2].Equals("float"))
-            {
-                // Getting the float and saving it encrypted.
-                float temp = PlayerPrefs.GetFloat(keynames[i, 0]);
-                if (deleteOldKeys)
-                {
-                    PlayerPrefs.DeleteKey(keynames[i, 0]);
-                }
-                SetFloat(keynames[i, 1], temp);
-            }
-            else
-            {
-                // If not a float and int, then we take it as a string and save it encrypted.
-                string temp = PlayerPrefs.GetString(keynames[i, 0]);
-                if (deleteOldKeys)
-                {
-                    PlayerPrefs.DeleteKey(keynames[i, 0]);
-                }
-                SetString(keynames[i, 1], temp);
-            }
-        }
-        Save();
-    }
-
-
     /**
 	 * Change the state of error log enabled.
 	 * 
@@ -139,7 +79,6 @@ public class SecurePlayerPrefs
         logErrorsEnabled = state;
     }
 
-
     /**
 	 * Saves a string in player preferences but securly encrypted.
 	 * @param key The preference id.
@@ -149,7 +88,6 @@ public class SecurePlayerPrefs
     {
         PlayerPrefs.SetString(key, Encrypt(val));
     }
-
 
     /**
 	 * Saves a float in the player prefs securely encrypted.
@@ -166,7 +104,6 @@ public class SecurePlayerPrefs
         SetString(key, val + String.Empty);
     }
 
-
     /**
 	 * Saves a float in the player prefs securely encrypted.
 	 * Note that everything is saved as strings, but can use methods provided
@@ -182,7 +119,6 @@ public class SecurePlayerPrefs
         SetString(key, val + String.Empty);
     }
 
-
     /**
 	 * Save a boolean in the player prefs.
 	 * 
@@ -194,7 +130,6 @@ public class SecurePlayerPrefs
     {
         SetInt(key, ((val) ? 1 : 0));
     }
-
 
     /**
 	 * Get a securly encrypted text from the player preferences.
@@ -222,20 +157,6 @@ public class SecurePlayerPrefs
         }
         return defaultValue;
     }
-
-
-    /**
-	 * Get a securly encrypted text from the player preferences.
-	 *
-	 * @param key The id of the player preferences.
-	 * @return The decrypted value or default in case of not found.
-	 * @see {@ GetString(key : string, defaultValue : string)
-	 */
-    public static string GetString(string key)
-    {
-        return GetString(key, String.Empty);
-    }
-
 
     /**
 	 * Get a securly encrypted int from the player preferences.
@@ -266,20 +187,6 @@ public class SecurePlayerPrefs
         return defaultValue;
     }
 
-
-    /**
-	 * Get a securly encrypted int from the player preferences.
-	 *
-	 * @param key The id of the player preferences.
-	 * @return The decrypted value or default in case of not found.
-	 * @see {@ GetInt(key : string, defaultValue : int)
-	 */
-    public static int GetInt(string key)
-    {
-        return GetInt(key, 0);
-    }
-
-
     /**
 	 * Get a securly encrypted float from the player preferences.
 	 *
@@ -309,20 +216,6 @@ public class SecurePlayerPrefs
         return defaultValue;
     }
 
-
-    /**
-	 * Get a securly encrypted float from the player preferences.
-	 *
-	 * @param key The id of the player preferences.
-	 * @return The decrypted value or default in case of not found.
-	 * @see {@ GetFloat(key : string, defaultValue : float)
-	 */
-    public static float GetFloat(string key)
-    {
-        return GetFloat(key, 0);
-    }
-
-
     /**
 	 * Get a securly encrypted bool from the player preferences.
 	 *
@@ -340,20 +233,6 @@ public class SecurePlayerPrefs
         return defaultValue;
     }
 
-
-    /**
-	 * Get a securly encrypted bool from the player preferences.
-	 *
-	 * @param key The id of the player preferences.
-	 * @return The decrypted value or default in case of not found.
-	 * @see {@ GetBool(key : string, defaultValue : bool)
-	 */
-    public static bool GetBool(string key)
-    {
-        return GetBool(key, false);
-    }
-
-
     /**
 	 * Removes key and its corresponding value from the preferences.
 	 *
@@ -364,7 +243,6 @@ public class SecurePlayerPrefs
         PlayerPrefs.DeleteKey(key);
     }
 
-
     /**
 	 * Removes all keys and values from the preferences.
 	 * Use with caution.
@@ -373,7 +251,6 @@ public class SecurePlayerPrefs
     {
         PlayerPrefs.DeleteAll();
     }
-
 
     /**
 	 * Returns true if key exists in the preferences.
@@ -384,7 +261,6 @@ public class SecurePlayerPrefs
     {
         return PlayerPrefs.HasKey(key);
     }
-
 
     /**
 	 * Writes all modified preferences to disk.
@@ -399,7 +275,6 @@ public class SecurePlayerPrefs
     {
         PlayerPrefs.Save();
     }
-
 
     /**
    * Decrypts a cipher with DES.
@@ -424,7 +299,6 @@ public class SecurePlayerPrefs
         }
     }
 
-
     /**
    * Encrypt a plain text with DES.
    *
@@ -447,5 +321,4 @@ public class SecurePlayerPrefs
             }
         }
     }
-
 }
