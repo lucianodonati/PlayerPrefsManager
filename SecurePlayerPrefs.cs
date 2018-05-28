@@ -53,7 +53,7 @@ public class SecurePlayerPrefs
             privateKey = PRIVATE_KEY_PREFIX + GetString(RAND_KEY) + PRIVATE_KEY_SUFFIX;
         else
         {
-            int rand = UnityEngine.Random.Range(100,999);
+            int rand = UnityEngine.Random.Range(100, 999);
             privateKey = PRIVATE_KEY_PREFIX + rand + PRIVATE_KEY_SUFFIX;
             SetInt(RAND_KEY, rand);
         }
@@ -138,7 +138,7 @@ public class SecurePlayerPrefs
 	 * @param defaultValue The default to return.
 	 * @return The decrypted value or default in case of not found.
 	 */
-    public static string GetString(String key, String defaultValue)
+    public static string GetString(String key, String defaultValue = "")
     {
         string s = PlayerPrefs.GetString(key, defaultValue);
         if (s != defaultValue && s != String.Empty && s != null)
@@ -165,7 +165,7 @@ public class SecurePlayerPrefs
 	 * @param defaultValue The default to return.
 	 * @return The decrypted value or default in case of not found
 	 */
-    public static int GetInt(String key, int defaultValue)
+    public static int GetInt(String key, int defaultValue = 0)
     {
         string s = PlayerPrefs.GetString(key);
         if (s != String.Empty && s != null)
